@@ -1,0 +1,26 @@
+.{
+    .name = .zig_shock_udp,
+
+    .version = "0.0.0",
+
+    .fingerprint = 0x4c487dadb46dcc52,
+
+    .minimum_zig_version = "0.14.0",
+
+    .dependencies = .{
+        .udp = .{
+            .url = "https://github.com/solenopsys/zig-udpuring/archive/8145dd15d00109c1f4def8ad40bfcd4f7315e7be.tar.gz",
+            .hash = "udp_uring-0.0.1-ZfYJtnhsAADkB3x0ElEbx1lr-YiJbtCaKToAjGnDlCm-",
+        },
+        .shock = .{
+            .url = "https://github.com/solenopsys/zig-shock/archive/6cb1183e88bb2d06120d684a75266cefbd85a9b1.tar.gz",
+            .hash = "zig_shock-0.0.0-d1WlBk3MAAAGxvL-6rnlidgVgOu1nsxtmXtWk-pX9x7l",
+        },
+    },
+
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+    },
+}
