@@ -10,9 +10,17 @@ pub fn build(b: *std.Build) void {
     });
     const shock_mod = b.dependency("shock", .{}).artifact("shock");
 
-    const exe = b.addExecutable(.{
+    // Create the library
+    const lib = b.addStaticLibrary(.{
         .name = "shock-udp",
-        .root_source_file = .{ .cwd_relative = "src/main.zig" },
+        .root_source_file = b.path("src/udp-handler.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    const exe = b.addExecutable(.{
+        .name = "example",
+        .root_source_file = .{ .cwd_relative = "src/example.zig" },
         .target = target,
         .optimize = optimize,
     });
@@ -25,7 +33,7 @@ pub fn build(b: *std.Build) void {
 
     // Для более новых версий Zig (0.11.0+), используйте следующий синтаксис вместо:
     // exe.root_module.addImport("udp", udp_module);
-
+    b.installArtifact(lib);
     b.installArtifact(exe);
 
     const run_cmd = b.addRunArtifact(exe);

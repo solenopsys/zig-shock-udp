@@ -19,10 +19,8 @@ pub const UdpHandler = struct {
     parser: Parser,
     addresses: std.AutoHashMap(u32, net.Address),
     received_packets: std.ArrayList(Packet),
-    port: u16,
 
-    pub fn init(allocator: std.mem.Allocator, processor: *Processor, address: []const u8, port: u16) !*UdpHandler {
-        const server_addr = try net.Address.parseIp4(address, port);
+    pub fn init(allocator: std.mem.Allocator, processor: *Processor, server_addr: net.Address) !*UdpHandler {
         const self = try allocator.create(UdpHandler);
 
         // Initialize UdpGate
@@ -43,7 +41,6 @@ pub const UdpHandler = struct {
             .gate = gate,
             .parser = Parser.init(),
             .addresses = addresses,
-            .port = port,
         };
 
         // Set message handler for the gate
@@ -56,9 +53,8 @@ pub const UdpHandler = struct {
         return self;
     }
 
-    pub fn setAddress(self: *UdpHandler, obj: u32, address: []const u8) !void {
-        const server_addr = try net.Address.parseIp4(address, self.port);
-        try self.addresses.put(obj, server_addr);
+    pub fn setAddress(self: *UdpHandler, obj: u32, address: net.Address) !void {
+        try self.addresses.put(obj, address);
     }
 
     pub fn deinit(self: *UdpHandler) void {
@@ -72,15 +68,6 @@ pub const UdpHandler = struct {
     pub fn handleUdpMessage(ctx: *anyopaque, data: []const u8, sender: net.Address) void {
         const self: *UdpHandler = @ptrCast(@alignCast(ctx));
         _ = sender;
-
-        // Parse the received data into a packet
-        // const packet = self.parser.parse(data) catch |err| {
-        //     std.debug.print("Error parsing packet: {}\n", .{err});
-        //     return;
-        // };
-
-        //  const pack = @as(*Packet, packet);
-        // Process the packet
         self.handler.onMessage(self.handler.processor, data);
     }
 
